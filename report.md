@@ -2,15 +2,9 @@
 
 **Nama:** Miftahul Fauzi Rifai  
 **NIM:** 11231040  
-**Mata Kuliah:** Sistem Paralel dan Terdistribusi (E2526)  
+**Mata Kuliah:** Sistem Paralel dan Terdistribusi  
 **Dosen:** Riska Kurniyanto Abdullah, S.T., M.Kom.  
 **Tahun:** 2026
-
----
-
-## Referensi Utama
-
-Coulouris, G., Dollimore, J., Kindberg, T., & Blair, G. (2012). *Distributed systems: Concepts and design* (5th ed.). Addison-Wesley.
 
 ---
 
@@ -20,7 +14,7 @@ Coulouris, G., Dollimore, J., Kindberg, T., & Blair, G. (2012). *Distributed sys
 
 ### T1 (Bab 1): Karakteristik Sistem Terdistribusi dan Trade-off Desain Pub-Sub Aggregator
 
-Sistem terdistribusi adalah sekumpulan komputer independen yang tampil kepada pengguna sebagai sistem tunggal dan terpadu (Coulouris et al., 2012). Karakteristik utamanya meliputi konkurensi komponen, ketiadaan jam global, dan kegagalan independen. Dalam desain sistem ini, karakteristik tersebut tercermin secara langsung.
+Sistem terdistribusi adalah sekumpulan komputer independen yang tampil kepada pengguna sebagai sistem tunggal dan terpadu . Karakteristik utamanya meliputi konkurensi komponen, ketiadaan jam global, dan kegagalan independen. Dalam desain sistem ini, karakteristik tersebut tercermin secara langsung.
 
 **Heterogenitas**: Publisher, aggregator, Redis, dan Postgres berjalan sebagai container terpisah dengan stack yang berbeda namun terhubung via jaringan internal Compose.
 
@@ -39,7 +33,7 @@ Sistem terdistribusi adalah sekumpulan komputer independen yang tampil kepada pe
 
 ### T2 (Bab 2): Kapan Memilih Arsitektur Publish–Subscribe Dibanding Client–Server?
 
-Arsitektur client-server cocok untuk skenario request-response sinkron dengan konsumer yang diketahui secara statis (Coulouris et al., 2012). Sebaliknya, publish-subscribe lebih tepat dalam situasi berikut:
+Arsitektur client-server cocok untuk skenario request-response sinkron dengan konsumer yang diketahui secara statis . Sebaliknya, publish-subscribe lebih tepat dalam situasi berikut:
 
 **Banyak konsumer dari satu sumber**: Event log dari sistem produksi perlu dikonsumsi oleh aggregator, monitoring service, dan audit service secara bersamaan. Dalam client-server, publisher harus memanggil setiap konsumer secara eksplisit, menciptakan coupling yang ketat.
 
@@ -59,7 +53,7 @@ Arsitektur client-server cocok untuk skenario request-response sinkron dengan ko
 
 ### T3 (Bab 3): At-least-once vs. Exactly-once Delivery; Peran Idempotent Consumer
 
-Dalam komunikasi terdistribusi, jaminan pengiriman pesan dikategorikan menjadi tiga level: *at-most-once*, *at-least-once*, dan *exactly-once* (Coulouris et al., 2012).
+Dalam komunikasi terdistribusi, jaminan pengiriman pesan dikategorikan menjadi tiga level: *at-most-once*, *at-least-once*, dan *exactly-once* .
 
 **At-most-once**: Pesan dikirim paling banyak satu kali. Tidak ada retransmisi saat terjadi kegagalan, sehingga pesan dapat hilang. Tidak aman untuk sistem log yang memerlukan completeness.
 
@@ -82,7 +76,7 @@ Jika event sudah ada, insert diabaikan secara atomik. Dengan demikian, meski eve
 
 ### T4 (Bab 4): Skema Penamaan Topic dan Event_ID untuk Deduplication
 
-Penamaan merupakan komponen fundamental dalam sistem terdistribusi untuk mengidentifikasi sumber daya secara unik dan efisien (Coulouris et al., 2012).
+Penamaan merupakan komponen fundamental dalam sistem terdistribusi untuk mengidentifikasi sumber daya secara unik dan efisien .
 
 **Skema Topic:**
 Format: `<domain>.<event-type>` (contoh: `user.login`, `order.created`, `payment.processed`). Hierarki ini memungkinkan filtering efisien dengan prefix matching dan mencerminkan *bounded context* dari sistem sumber. Topic bersifat *case-sensitive*, dibatasi 255 karakter (VARCHAR(255)), dan divalidasi Pydantic untuk memastikan tidak kosong.
@@ -101,7 +95,7 @@ Constraint ini juga menjadi *index* utama untuk lookup dedup yang cepat (O(log n
 
 ### T5 (Bab 5): Ordering Praktis — Timestamp + Monotonic Counter
 
-Dalam sistem terdistribusi, tidak ada jam global yang disepakati semua node, sehingga ordering event lintas node memerlukan strategi khusus (Coulouris et al., 2012).
+Dalam sistem terdistribusi, tidak ada jam global yang disepakati semua node, sehingga ordering event lintas node memerlukan strategi khusus .
 
 **Strategi Ordering dalam Sistem Ini:**
 Setiap event membawa field `timestamp` (ISO8601 dari publisher, jam client). PostgreSQL menyimpan `processed_at` (waktu server saat event diproses). Untuk query, events diurutkan berdasarkan `processed_at DESC` atau `id DESC` (BIGSERIAL monotonic).
@@ -122,7 +116,7 @@ Setiap event membawa field `timestamp` (ISO8601 dari publisher, jam client). Pos
 
 ### T6 (Bab 6): Failure Modes dan Mitigasi
 
-Coulouris et al. (2012) mengidentifikasi beberapa tipe kegagalan: *crash failure*, *omission failure*, dan *arbitrary (Byzantine) failure*. Sistem ini menghadapi dan memitigasi beberapa mode kegagalan:
+Mengidentifikasi beberapa tipe kegagalan: *crash failure*, *omission failure*, dan *arbitrary (Byzantine) failure*. Sistem ini menghadapi dan memitigasi beberapa mode kegagalan:
 
 **Crash Failure — Aggregator:**
 *Mitigasi*: Redis queue bertindak sebagai *durable buffer*. Event yang sudah di-`RPUSH` ke Redis tidak hilang meski aggregator restart. Saat restart, consumer worker melanjutkan `BLPOP` dari antrian yang sama. Dedup store di Postgres memastikan event yang sudah diproses tidak diproses ulang setelah restart.
@@ -143,7 +137,7 @@ Coulouris et al. (2012) mengidentifikasi beberapa tipe kegagalan: *crash failure
 
 ### T7 (Bab 7): Eventual Consistency pada Aggregator; Peran Idempotency + Dedup
 
-*Eventual consistency* berarti sistem akan mencapai state yang konsisten jika tidak ada update baru, meskipun pada saat tertentu node berbeda mungkin melihat state yang berbeda (Coulouris et al., 2012).
+*Eventual consistency* berarti sistem akan mencapai state yang konsisten jika tidak ada update baru, meskipun pada saat tertentu node berbeda mungkin melihat state yang berbeda .
 
 **Manifestasi Eventual Consistency:**
 Saat publisher mengirim event via `POST /publish`, event langsung masuk Redis queue dan counter `received` diinkremen. Namun event belum ada di tabel `processed_events` sampai consumer worker memprosesnya. Terdapat *window* latensi (umumnya < 100ms) antara "accepted" dan "visible di `GET /events`"—ini merupakan eventual consistency.
@@ -161,7 +155,7 @@ Dedup memastikan konsistensi kausal: urutan pengiriman tidak penting selama `(to
 
 ### T8 (Bab 8): Desain Transaksi — ACID, Isolation Level, Strategi Menghindari Lost-Update
 
-Transaksi harus memenuhi properti ACID: *Atomicity*, *Consistency*, *Isolation*, *Durability* (Coulouris et al., 2012). Sistem ini menerapkan transaksi eksplisit pada setiap operasi pemrosesan event:
+Transaksi harus memenuhi properti ACID: *Atomicity*, *Consistency*, *Isolation*, *Durability* . Sistem ini menerapkan transaksi eksplisit pada setiap operasi pemrosesan event:
 
 **Atomicity:** Dalam satu transaksi (`async with conn.transaction()`), dua operasi dilakukan bersamaan: INSERT ke `processed_events` dan UPDATE ke `stats`. Keduanya commit atau rollback bersama—tidak ada keadaan di mana event tersimpan tetapi stats tidak terupdate.
 
@@ -183,7 +177,7 @@ Operasi ini atomic di level PostgreSQL. Berbeda dengan pendekatan *read-modify-w
 
 ### T9 (Bab 9): Kontrol Konkurensi — Locking, Unique Constraints, Upsert; Idempotent Write Pattern
 
-Kontrol konkurensi memastikan eksekusi transaksi konkuren menghasilkan hasil yang ekuivalen dengan eksekusi serial (*serializability*) (Coulouris et al., 2012). Sistem ini menggunakan beberapa mekanisme:
+Kontrol konkurensi memastikan eksekusi transaksi konkuren menghasilkan hasil yang ekuivalen dengan eksekusi serial (*serializability*) . Sistem ini menggunakan beberapa mekanisme:
 
 **1. Unique Constraint sebagai Lock-free Dedup:**
 `CONSTRAINT unique_topic_event UNIQUE (topic, event_id)` adalah mekanisme dedup non-blocking. Saat dua worker mencoba INSERT event yang sama secara bersamaan:
@@ -210,7 +204,7 @@ Pattern ini adalah contoh klasik *idempotent write*: operasi yang sama dapat die
 ### T10 (Bab 10–13): Orkestrasi Compose, Keamanan Jaringan, Persistensi, Observability
 
 **Orkestrasi Docker Compose (Bab 12–13):**
-Sistem menggunakan `docker-compose.yml` dengan 4 service utama. Dependency chain dikelola via `depends_on` dengan `condition: service_healthy`, memastikan Postgres dan Redis sepenuhnya siap sebelum aggregator dimulai (Coulouris et al., 2012). Healthcheck berbasis `pg_isready` dan `redis-cli ping` menjadi *liveness probe* yang andal. Publisher menggunakan `restart: "no"` agar hanya berjalan sekali per `docker compose up`.
+Sistem menggunakan `docker-compose.yml` dengan 4 service utama. Dependency chain dikelola via `depends_on` dengan `condition: service_healthy`, memastikan Postgres dan Redis sepenuhnya siap sebelum aggregator dimulai . Healthcheck berbasis `pg_isready` dan `redis-cli ping` menjadi *liveness probe* yang andal. Publisher menggunakan `restart: "no"` agar hanya berjalan sekali per `docker compose up`.
 
 **Keamanan Jaringan Lokal (Bab 10):**
 Seluruh service terhubung dalam Docker network `internal` (bridge driver). Tidak ada service yang mempublikasikan port ke host selain aggregator (`:8080`). Broker Redis dan Storage Postgres tidak memiliki port mapping ke host (`ports: []` implisit), mencegah akses langsung dari luar Compose network. Ini mengimplementasikan prinsip *network isolation*—setiap service hanya dapat berkomunikasi dengan service yang diperlukan.
