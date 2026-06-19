@@ -1,6 +1,6 @@
 # Pub-Sub Log Aggregator Terdistribusi
 
-**UAS Sistem Terdistribusi **  
+**UAS Sistem Terdistribusi**  
 **Mahasiswa:** Miftahul Fauzi Rifai — 11231040  
 **Program Studi:** Informatika, Institut Teknologi Kalimantan
 
