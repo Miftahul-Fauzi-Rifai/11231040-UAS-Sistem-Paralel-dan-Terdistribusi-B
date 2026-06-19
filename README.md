@@ -218,6 +218,6 @@ Isolation level **READ COMMITTED** dipilih karena:
 
 ## Link Video Demo
 
-> **[YouTube Demo - Link akan ditambahkan setelah upload]**
+> https://youtu.be/z9hRiPWYkpo
 
 
