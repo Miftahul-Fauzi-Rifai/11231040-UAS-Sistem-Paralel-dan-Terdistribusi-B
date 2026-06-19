@@ -2,7 +2,7 @@
 
 **Nama:** Miftahul Fauzi Rifai  
 **NIM:** 11231040  
-**Mata Kuliah:** Sistem Paralel dan Terdistribusi  
+**Mata Kuliah:** Sistem Paralel dan Terdistribusi (E2526)  
 **Dosen:** Riska Kurniyanto Abdullah, S.T., M.Kom.  
 **Tahun:** 2026
 
