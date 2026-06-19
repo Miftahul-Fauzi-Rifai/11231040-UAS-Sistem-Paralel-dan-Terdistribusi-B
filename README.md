@@ -220,4 +220,6 @@ Isolation level **READ COMMITTED** dipilih karena:
 
 > https://youtu.be/z9hRiPWYkpo
 
+## Laporan 
 
+Pembahasan teori lengkap ada di [`report.md`](report.md).
